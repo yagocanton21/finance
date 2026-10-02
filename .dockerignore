@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Ambientes virtuais
+.venv/
+venv/
+ENV/
+env/
+
+# Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Arquivos sensíveis
+.env
+.env.local
+*.env
+
+# Volumes locais e banco
+postgres_data/
+*.sqlite3
+*.db
+
+# Logs e IDEs
+*.log
+.vscode/
+.idea/
