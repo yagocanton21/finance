@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Ambientes virtuais
+.venv/
+venv/
+ENV/
+env/
+
+# Arquivos de configuração de ambiente e segredos
+.env
+.env.local
+*.env
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Banco de dados local / dumps
+*.sqlite3
+*.db
+
+# Docker / volumes locais
+postgres_data/
+
+# Logs e arquivos do SO
+*.log
+Thumbs.db
+.DS_Store
