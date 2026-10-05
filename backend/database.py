@@ -6,7 +6,7 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 load_dotenv()
 
-
+# cria motor de conexão com o banco de dados
 def criar_engine():
     database_url = os.getenv("DATABASE_URL")
     return create_engine(database_url)
@@ -22,7 +22,7 @@ SessionLocal = sessionmaker(
 
 Base = declarative_base()
 
-
+# função para criar sessão com o banco de dados
 def get_db():
     db = SessionLocal()
 
