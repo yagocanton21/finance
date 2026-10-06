@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from backend.database import engine, SessionLocal, Base
-from backend.models.usuarios import Usuario
+from backend.models import Categoria, Transacao, Usuario
 from backend.routers import usuario, login
 # cria as tabelas no banco de dados
 Base.metadata.create_all(bind=engine)
