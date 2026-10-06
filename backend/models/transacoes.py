@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Numeric, String
+from sqlalchemy import Boolean, Column, Date, DateTime, ForeignKey, Integer, Numeric, String
 from sqlalchemy.orm import relationship
 
 from backend.database import Base
@@ -16,6 +16,11 @@ class Transacao(Base):
     valor = Column(Numeric(10, 2), nullable=False)
     criado_em = Column(DateTime, default=datetime.now)
     atualizado_em = Column(DateTime, default=datetime.now, onupdate=datetime.now)
+    data_vencimento = Column(Date)
+    pago = Column(Boolean, default=False)
+    parcela_atual = Column(Integer)
+    total_parcelas = Column(Integer)
+    grupo_id = Column(String)
 
     usuario = relationship("Usuario")
     categoria = relationship("Categoria")
