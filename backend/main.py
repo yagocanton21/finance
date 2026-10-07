@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from backend.database import engine, SessionLocal, Base
-from backend.models.usuarios import Usuario
-from backend.routers import usuario, login
+from backend.models import Categoria, Transacao, Usuario
+from backend.routers import usuario, login, categorias
 # cria as tabelas no banco de dados
 Base.metadata.create_all(bind=engine)
 
@@ -11,6 +11,7 @@ app = FastAPI()
 # registra as rotas
 app.include_router(usuario.router)
 app.include_router(login.router)
+app.include_router(categorias.router)
 
 
 @app.get("/")
