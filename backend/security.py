@@ -1,11 +1,20 @@
-import bcrypt
-from datetime import datetime, timedelta, timezone
-import jwt
 import os
+from datetime import datetime, timedelta, timezone
+
+import bcrypt
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+import jwt
+from sqlalchemy.orm import Session
+
+from backend.database import get_db
+from backend.models.usuarios import Usuario
 
 SECRET_KEY = os.getenv("SECRET_KEY", "21f582ec6dfebf7833aaaf8a8fa69b7b72161d7c12b4045a3f25c5c7f6ea35f3")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 # gera criptografia para a senha
 def hash_senha(senha: str, rounds: int = 12) -> str:
@@ -32,4 +41,30 @@ def criar_token(dados: dict) -> str:
     # Codifica e assina o token
     token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token_jwt
+
+# obtém o usuário autenticado a partir do token jwt
+def obter_usuario_atual(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db)
+) -> Usuario:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Credenciais inválidas ou token expirado",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        nome_usuario: str | None = payload.get("sub")
+        if nome_usuario is None:
+            raise credentials_exception
+    except jwt.PyJWTError:
+        raise credentials_exception
+
+    usuario = db.query(Usuario).filter(Usuario.usuario == nome_usuario).first()
+    if usuario is None:
+        raise credentials_exception
+
+    return usuario
+
 
