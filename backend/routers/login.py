@@ -1,6 +1,5 @@
-from backend.schemas.login import LoginCreate
-from backend.schemas.login import LoginResponse
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from backend.database import get_db
@@ -13,10 +12,13 @@ from backend.security import verificar_senha, criar_token
 router = APIRouter(prefix="/login", tags=["Login"])
 
 @router.post("/", response_model=LoginResponse)
-def login_usuario(dados_login: LoginCreate, db: Session = Depends(get_db)):
+def login_usuario(
+    dados_login: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+):
     
-    # verifica se usuario existe no banco
-    usuario = db.query(Usuario).filter(Usuario.usuario == dados_login.usuario).first()
+    # Recebe username e password no formato OAuth2 usado pelo Swagger.
+    usuario = db.query(Usuario).filter(Usuario.usuario == dados_login.username).first()
     if not usuario:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -24,7 +26,7 @@ def login_usuario(dados_login: LoginCreate, db: Session = Depends(get_db)):
         )
     
     # verifica se a senha é correta
-    if not verificar_senha(dados_login.senha, usuario.senha):
+    if not verificar_senha(dados_login.password, usuario.senha):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário ou senha incorretos"
